@@ -31,5 +31,5 @@ dependencies {
 
     compile 'com.android.support:recyclerview-v7:25.3.1'
 
-    compile project(path: ':wrapper')
+    compile project(path: ':recyclerview-wrapper')
 }

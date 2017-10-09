@@ -3,7 +3,10 @@ package com.jebysun.recyclerviewwrapper;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -51,6 +54,34 @@ public class RecyclerViewWrapper {
         mAdapterWrapper = new RecyclerViewAdapterWrapper(mAdapter);
         mRecyclerView.setAdapter(mAdapterWrapper);
         layout();
+
+        //TODO 下拉刷新，这里不推荐设置OnTouchListener，考虑从上级布局拦截实现。
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        Log.e("onTouch:"+mRecyclerView.getScrollState(), event.getY()+"-"+event.getRawY());
+                        break;
+                    case MotionEvent.ACTION_UP:
+                }
+                return false;
+            }
+        });
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.e("onScrolled:"+recyclerView.getScrollState(), dy+"");
+            }
+        });
     }
 
     private void layout() {
@@ -63,7 +94,7 @@ public class RecyclerViewWrapper {
         // 下拉刷新视图
         TextView tvRefresh = new TextView(mContext);
         tvRefresh.setBackgroundColor(Color.GREEN);
-        tvRefresh.setVisibility(View.GONE);
+//        tvRefresh.setVisibility(View.GONE);
         tvRefresh.setPadding(50, 50, 50, 50);
         tvRefresh.setText("下拉刷新");
         tvRefresh.setGravity(Gravity.CENTER);
