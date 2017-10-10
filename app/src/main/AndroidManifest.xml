@@ -17,8 +17,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".nested.NestedScrollViewTestActivity"></activity>
         <activity android:name=".WrapperRecyclerViewTestActivity"></activity>
+        <activity android:name=".test.FrameTestActivity"></activity>
     </application>
 
 </manifest>

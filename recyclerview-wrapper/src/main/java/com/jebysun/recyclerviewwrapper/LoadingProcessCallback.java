@@ -1,14 +1,17 @@
 package com.jebysun.recyclerviewwrapper;
 
 /**
- * 加载更多回调
+ * 加载更多过程回调接口
  * Created by JebySun on 2017/10/9.
  * email:jebysun@126.com
  */
 
-public interface LoadProgressCallback {
+public interface LoadingProcessCallback {
 
-    void onStart();
+    // 正在加载
+    void onLoading();
+
+    // 加载完成
     void onComplete();
 
 }

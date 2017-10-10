@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.jebysun.demo.test.FrameTestActivity;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView mTvWrapper;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v == mTvWrapper) {
             startActivity(new Intent(this, WrapperRecyclerViewTestActivity.class));
+//            startActivity(new Intent(this, FrameTestActivity.class));
         }
     }
 }

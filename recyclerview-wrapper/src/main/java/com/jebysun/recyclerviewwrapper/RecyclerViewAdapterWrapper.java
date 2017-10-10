@@ -1,9 +1,12 @@
 package com.jebysun.recyclerviewwrapper;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.zip.Inflater;
 
 /**
  * Created by JebySun on 2017/10/9.
@@ -11,10 +14,11 @@ import android.view.ViewGroup;
  */
 
 public class RecyclerViewAdapterWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final int ITEM_TYPE_HEADER = -100;
+    private static final int ITEM_TYPE_HEADER = -1;
 
     private RecyclerView.Adapter mAdapter;
-    private int mHeaderResId;
+    private View mHeaderView;
+    private int mLayoutResId;
 
     public RecyclerViewAdapterWrapper(RecyclerView.Adapter adapter) {
         mAdapter = adapter;
@@ -24,8 +28,10 @@ public class RecyclerViewAdapterWrapper extends RecyclerView.Adapter<RecyclerVie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ITEM_TYPE_HEADER) {
-            View headerView = LayoutInflater.from(parent.getContext()).inflate(mHeaderResId, parent, false);
-            return new HeaderViewHolder(headerView);
+            if (mLayoutResId != 0) {
+                mHeaderView = LayoutInflater.from(parent.getContext()).inflate(mLayoutResId, parent, false);
+            }
+            return new HeaderViewHolder(mHeaderView);
         }
         return mAdapter.onCreateViewHolder(parent, viewType);
     }
@@ -35,13 +41,15 @@ public class RecyclerViewAdapterWrapper extends RecyclerView.Adapter<RecyclerVie
         if (holder.getItemViewType() == ITEM_TYPE_HEADER) {
             return;
         }
-        position = position - (mHeaderResId == 0 ? 0 : 1);
-        mAdapter.onBindViewHolder(holder, position);
+        position = position - ((mHeaderView == null || mLayoutResId == 0) ? 0 : 1);
+        if (position < mAdapter.getItemCount()) {
+            mAdapter.onBindViewHolder(holder, position);
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0 && mHeaderResId != 0) {
+        if (position == 0 && (mHeaderView != null || mLayoutResId != 0)) {
             return ITEM_TYPE_HEADER;
         }
         return mAdapter.getItemViewType(position);
@@ -50,19 +58,17 @@ public class RecyclerViewAdapterWrapper extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemCount() {
-        return mAdapter.getItemCount() + (mHeaderResId == 0 ? 0 : 1);
+        return mAdapter.getItemCount() + ((mHeaderView == null || mLayoutResId == 0) ? 0 : 1);
     }
 
-    /**
-     * TODO
-     * @param view
-     */
     public void setHeaderView(View view) {
-
+        mHeaderView = view;
+        mLayoutResId = 0;
     }
 
     public void setHeaderView(int layoutResId) {
-        mHeaderResId = layoutResId;
+        mLayoutResId = layoutResId;
+        mHeaderView = null;
     }
 
 

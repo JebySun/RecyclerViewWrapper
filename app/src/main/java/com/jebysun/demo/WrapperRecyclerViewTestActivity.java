@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jebysun.recyclerviewwrapper.OnLoadingListener;
+import com.jebysun.recyclerviewwrapper.OnRefreshListener;
 import com.jebysun.recyclerviewwrapper.RecyclerViewWrapper;
 
 import java.util.ArrayList;
@@ -24,7 +26,6 @@ public class WrapperRecyclerViewTestActivity extends AppCompatActivity {
 
     private RecyclerView mRecycler;
     private RecyclerViewWrapper mRecyclerWrapper;
-    private RecyclerAdapter mAdapter;
     private List<String> mList = new ArrayList<>();
 
     @Override
@@ -34,28 +35,76 @@ public class WrapperRecyclerViewTestActivity extends AppCompatActivity {
 
         mRecycler = (RecyclerView) findViewById(R.id.recycler);
 
+        // 一般的RecylcerView使用
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mRecycler.addItemDecoration(new LinearLayoutItemDecoration(20));
-        mAdapter = new RecyclerAdapter();
-        mRecycler.setAdapter(mAdapter);
+        mRecycler.addItemDecoration(new LinearLayoutItemDecoration(40));
+        mRecycler.setAdapter(new RecyclerAdapter());
 
 
 
 
-        //Wrapper使用开始
+        // Wrapper使用开始，注意要在设置setAdapter之后。
         mRecyclerWrapper = new RecyclerViewWrapper(mRecycler);
 
-        //设置HeaderView
+        View headerView = LayoutInflater.from(this).inflate(R.layout.layout_header, null);
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AndroidUtil.toastShort(WrapperRecyclerViewTestActivity.this, "=====onClick======");
+            }
+        });
+        // 设置HeaderView TODO 大小有问题
+        mRecyclerWrapper.setHeaderView(headerView);
+        // 设置HeaderView 大小无问题
         mRecyclerWrapper.setHeaderView(R.layout.layout_header);
 
-        //设置空列表视图
         TextView emptyView = new TextView(this);
         emptyView.setText("列表为空");
         emptyView.setGravity(Gravity.CENTER);
+        emptyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AndroidUtil.toastShort(WrapperRecyclerViewTestActivity.this, "重新加载数据");
+            }
+        });
+        // 设置空列表视图
         mRecyclerWrapper.setEmptyView(emptyView);
+//        mRecyclerWrapper.setEmptyView(R.layout.layout_empty);
+
+        // 下拉刷新
+        mRecyclerWrapper.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // TODO 刷新
+                mRecycler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AndroidUtil.toastShort(WrapperRecyclerViewTestActivity.this, "刷新完成");
+                        mRecyclerWrapper.refreshComplete();
+                    }
+                }, 1000);
+            }
+        });
+
+        // 加载更多
+        mRecyclerWrapper.setOnLoadingListener(new OnLoadingListener() {
+            @Override
+            public void onLoading() {
+                // TODO 加载
+                mRecycler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AndroidUtil.toastShort(WrapperRecyclerViewTestActivity.this, "加载完成");
+                        mRecyclerWrapper.loadingComplete();
+                    }
+                }, 1000);
+            }
+        });
 
 
-        //数据模拟
+
+
+        // 数据模拟
         testData();
 
         mRecyclerWrapper.notifyDataSetChanged();
@@ -65,7 +114,6 @@ public class WrapperRecyclerViewTestActivity extends AppCompatActivity {
         for (int i=0; i<40; i++) {
             mList.add("杨国富麻辣烫" + i);
         }
-
     }
 
 

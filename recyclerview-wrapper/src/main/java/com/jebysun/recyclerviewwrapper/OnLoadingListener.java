@@ -5,6 +5,6 @@ package com.jebysun.recyclerviewwrapper;
  * email:jebysun@126.com
  */
 
-public interface OnLoadListener {
-    void onLoad();
+public interface OnLoadingListener {
+    void onLoading();
 }
