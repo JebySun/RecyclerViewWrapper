@@ -16,10 +16,10 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="#FFFFFF"
-            android:text="WPS图书馆"/>
+            android:text="使用Demo集合"/>
     </android.support.v7.widget.Toolbar>
 
-    <TextView android:id="@+id/tv_wrapper"
+    <Button android:id="@+id/btn_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
